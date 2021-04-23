@@ -1,0 +1,20 @@
+/*
+********************
+*/
+
+.hero.is-primary {
+    background-color: #be4028;
+    color: #fff;
+}
+
+.button.is-primary {
+    background-color: #e7745d;
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-primary:hover {
+    background-color: #be4028;
+    border-color: transparent;
+    color: #fff;
+}
