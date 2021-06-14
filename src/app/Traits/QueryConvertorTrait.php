@@ -11,6 +11,7 @@ trait QueryConvertorTrait {
 	//convert Laravel query to readable sql
 	public function eloquentToSQL($eloquent) {
 		$dbWOrd = 'DB::';
+
 		//chcek if there is DB:: string
 		if (strpos($eloquent, $dbWOrd) !== false) {
 
@@ -18,7 +19,7 @@ trait QueryConvertorTrait {
 			$eloquentArr = explode('->', $eloquent);
 			$spChar = array("\r\n", "\n", "\r");
 
-			$thingToremove = ['(', ')', '()', "'", 'DB::table', 'DB::', 'table', 'where'];
+			$thingToremove = ['(', ')', '()', "'", 'DB::table', 'DB::', 'table', 'where', 'get', 'first'];
 			$buildEloquent = '';
 
 			foreach ($eloquentArr as $key => $eloquentString) {
@@ -27,20 +28,24 @@ trait QueryConvertorTrait {
 				if (strpos($eloquentString, 'table') !== false) {
 					$eloquentString = str_replace($thingToremove, '', $eloquentString);
 					$buildEloquent = DB::table($eloquentString);
-				}
 
-				if (strpos($eloquentString, 'where') !== false) {
+				} else if (strpos($eloquentString, 'where') !== false) {
 					$eloquentString = str_replace($thingToremove, '', $eloquentString);
 					$where = explode(',', $eloquentString);
 					$buildEloquent->where(...$where);
+
+				} else {
+					$eloquentString = str_replace($thingToremove, '', $eloquentString);
+					if (!empty($eloquentString)) {
+						$buildEloquent->{$eloquentString}();
+					}
 				}
-
 			}
-
 		}
 
 		$query = str_replace(array('?'), array('\'%s\''), $buildEloquent->toSql());
 		$query = vsprintf($query, $buildEloquent->getBindings());
+
 		return $query;
 	}
 
