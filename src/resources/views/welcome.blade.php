@@ -79,26 +79,20 @@
         let parsed = null;
 
         fetch('/convert-eloquent-to-sql', {
-                    method: 'get',
+                    method: 'post',
                     body: JSON.stringify({
-                        "title": "Convert failed",
-                        "body": input,
-                        "assignees": [
-                            "sql2builder"
-                        ],
-                        "labels": [
-                            "bug"
-                        ]
+                        "query": input
                     }),
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authorization': 'token 7786eb107fe6bf689802882ca51c42ff820856c6',
+                        //'Authorization': 'token 7786eb107fe6bf689802882ca51c42ff820856c6',
                     }
                 }).then(function(response) {
                     return response.json();
                 }).then(function(data) {
-                    console.log('Created Issue success.', data);
+                    console.log('Created Issue success.', data.sql);
+                    document.getElementById("output").value = data.sql;
                 });
     }
 </script>
